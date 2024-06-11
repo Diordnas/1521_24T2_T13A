@@ -4,27 +4,23 @@ N_SIZE = 10
 
 main:
 	# i in $t0
-loop_init:
-	li	$t0, 0			# i = 0
-loop_cond:
-	bge	$t0, N_SIZE, loop_end	# while (i < N_SIZE) {
-loop_body:
-	li	$v0, 5			# scanf("%d", &numbers[i])
-	syscall				# mode 5: print_int
 
-					# this is the way lecturers and provided code will calculate addresses
-	la	$t1, numbers		# calculate the address of numbers
-	mul	$t2, $t0, 4		# multiply index by 4 because each array element is four bytes
-	add	$t1, $t1, $t2		# add modified index to address of start of array
-	sw	$v0, ($t1)		# store the value we read in at the address we calculated
-loop_incr:
-	add	$t0, $t0, 1		# i++
-	b	loop_cond		# }
-loop_end:
-	jr	$ra			# return
+load_array_init:
+	li	$t0, 0
+load_array_cond:
+	bge	$t0, N_SIZE, load_array_end
+load_array_body:
+	li	$v0, 5
+	syscall
 
+	mul	$t1, $t0, 4		# &numbers[i]
+	sw	$v0, numbers($t1)	# = &numbers + (i * 4)
+load_array_step:
+	add	$t0, $t0, 1
+	b	load_array_cond
+load_array_end:
+	jr	$ra
 
 	.data
 numbers:
-	# this is an array of words
-	.word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	.space 4 * N_SIZE

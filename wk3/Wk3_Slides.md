@@ -6,8 +6,6 @@ class: invert
 # Managing Mips Memory!
 Week 3 Tute
 
-We'll start at 15 past :D
-
 ---
 
 # Assignment 1

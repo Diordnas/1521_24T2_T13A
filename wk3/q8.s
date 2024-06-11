@@ -7,47 +7,65 @@
 # }
 
 main:
-main__prologue:
-	push	$ra		# put $ra into memory so it
-				# doesn't get overridden by jal
+	push	$ra		# put $ra's original value on the stack
 
-main__body:
-	la	$a0, string	# put the argument into the a register
-	jal	get_str_len	# jump-and-link | call the function
+	la	$a0, string_1	# call get_str_len(string_1)
+	jal	get_str_len
 
-				# you could comment this whole block as:
-				# get_str_len(string)
+	move	$a0, $v0	# print the result
+	li	$v0, 1		# mode 1: print_int
+	syscall
 
-main__epilogue:
-	pop	$ra		# always pop in the reverse order to push
-	jr	$ra
+	li	$a0, '\n'	# print '\n'
+	li	$v0, 11		# mode 11: print_char
+	syscall
 
+	la	$a0, string_1	# call get_str_len(string_2)
+	jal	get_str_len
+
+	move	$a0, $v0	# print the result
+	li	$v0, 1		# mode 1: print_int
+	syscall
+
+	li	$a0, '\n'	# print '\n'
+	li	$v0, 11		# mode 11: print_char
+	syscall
+
+	pop	$ra		# get $ra's original value from the stack
+	jr	$ra		# return
+
+# Gets the length of a null-terminated string
+#
+# args:
+# - $a0: the string
+#
+# returns:
+# - $v0: the length of the string
+#
+# local variables:
+# - s in $t0
+# - length in $t1
+# - temp in $t2
+#
 get_str_len:
-get_str_len__prologue:
-	# arguments:
-	# $a0 : string pointer to get length of
-	move	$t0, $a0				# in the prologue, move arguments into proper registers
+	move	$t0, $a0			# s is an argument
+	li	$t1, 0				# length = 0
 
-get_str_len__body:
-	# s in $t0
-	# length in $t1
+get_str_len__while_start:
+	lb	$t2, ($t0)			# while *s != '\0' {
+	beqz	$t2, get_str_len__while_end
+	add	$t0, $t0, 1			# s++
+	add	$t1, $t1, 1			# length++
+	b	get_str_len__while_start	# }
 
-get_str_len__loop_init:
-	li	$t1, 0					# length = 1
-get_str_len__loop_cond:
-	lb	$t2, ($t0)				# deref s, load from memory
-	beq	$t2, '\0', get_str_len__loop_end	# while (*s != '\0') {
-get_str_len__loop_incr:
-	add	$t0, $t0, 1				# s++
-	add	$t1, $t1, 1				# length++
-	b	get_str_len__loop_cond			# }
-get_str_len__loop_end:
-	move	$v0, $t1				# return length
-	jr	$ra					# we return by storing the value we want to return
-							# into $v0
+get_str_len__while_end:
+	move	$v0, $t1			# return length
+	jr	$ra
 
 
 
 	.data
-string:
-	.asciiz "supercalisticexpialodocious"
+string_1:
+	.asciiz "hello everybody"
+string_2:
+	.asciiz "what's up"

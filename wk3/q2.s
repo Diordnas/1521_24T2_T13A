@@ -1,6 +1,6 @@
 
 
-	.data			# Enter the data section of memory
+	.data			# 
 u:	.space	4		# int u;
 v:	.word	42		# int v = 42;
 w:	.space	1		# char w;

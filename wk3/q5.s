@@ -1,34 +1,30 @@
-# A simple program that will print 10 numbers from an array
+# A simple program that will read 10 numbers into an array
 
 N_SIZE = 10
 
 main:
 	# i in $t0
 
-loop_init:
-	li	$t0, 0			# i = 0
-loop_cond:
-	bge	$t0, N_SIZE, loop_end	# while (i < N_SIZE) {
-loop_body:
-					# this is a slightly simpler method for calculating array addresses
-	mul	$t1, $t0, 4		# multiply i * 4 because word = 4 bytes
-	lw	$a0, numbers($t1)	# load word from numbers[i] into a register
-	li	$v0, 1			# printf(numbers[i])
-	syscall				# mode 1: print_int
+load_array_init:
+	li	$t0, 0
+load_array_cond:
+	bge	$t0, N_SIZE, load_array_end
+load_array_body:
+	mul	$t1, $t0, 4		# &numbers[i]
+	lw	$a0, numbers($t1)	# = &numbers + (i * 4)
 
-	li	$a0, '\n'		# printf('\n')
-	li	$v0, 11			# mode 11: print_char
+	li	$v0, 1
 	syscall
 
-loop_incr:
-	add	$t0, $t0, 1		# i++
-	b	loop_cond		# }
-loop_end:
-
-	jr	$ra			# return
-
+	li	$a0, '\n'
+	li	$v0, 11
+	syscall
+load_array_step:
+	add	$t0, $t0, 1
+	b	load_array_cond
+load_array_end:
+	jr	$ra
 
 	.data
 numbers:
-	# this is an array of words
-	.word 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+	.word 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
