@@ -36,16 +36,7 @@ points_loop_cond:
 	add	$t5, $t5, $t4
 
 					
-	lw	$t1, STRUCT_POINT2D_ROW_OFFSET($t5)	# int row = my_points[i].row;
-	lw	$t2, STRUCT_POINT2D_COL_OFFSET($t5)	# int col = my_points[i].col;
-
-	la	$t4, topography_grid			# calcualting address of topography_grid[row][col]
-	mul	$t5, $t1, MAP_SIZE			# row * map_size
-	add	$t5, $t5, $t2				# + col
-	mul	$t5, $t5, 4				# * 4
-	add	$t5, $t5, $t4				# + togography_grid
-
-	lw	$t3, ($t5)				# int height = topography_grid[row][col]
+	# todo - this bit
 
 							# printf("Height at %d,%d=%d\n", row, col, height);
 

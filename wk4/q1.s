@@ -1,48 +1,48 @@
+# sum 4 numbers using function calls
+
 main:
-	begin
+main__prologue:
 	push	$ra
 
-	# result in $t0
-
-	li	$a0, 11		# result = sum4(11, 13, 17, 19)
+main__body:
+	li	$a0, 11
 	li	$a1, 13
 	li	$a2, 17
 	li	$a3, 19
 	jal	sum4
-	move	$t0, $v0
+	move	$a0, $v0
 
-	move	$a0, $t0	# print(result)
-	li	$v0, 1		# mode 1 : print_int
+	li	$v0, 1
 	syscall
 
-	li	$a0, '\n'	# print("\n")
-	li	$v0, 11		# mode 11 : print_char
+	li	$a0, '\n'
+	li	$v0, 11
 	syscall
 
+main__epilogue:
 	pop	$ra
-	end
 
-	li	$v0, 0		# return 0
+	li	$v0, 0
 	jr	$ra
 
-# sum4 returns the sum of 4 arguments
-#
-# args:
-# 	$a0 - a
-# 	$a1 - b
-# 	$a2 - c
-# 	$a3 - d
-#
-# returns:
-#	$v0 -> the sum of the 4 arguments
-#
-# locals:
-# 	res1 in $s4
-# 	res2 in $s5
 sum4:
-
-sum4__proglogue:
-	begin
+# function that adds four numbers
+# args:
+#	$a0 : a
+#	$a1 : b
+#	$a2 : c
+#	$a3 : d
+# return value:
+#	$v0 : sum of a, b, c, d
+# local variables:
+#	a in $s0
+#	b in $s1
+#	c in $s2
+#	d in $s3
+#	res1 in $s4
+#	res2 in $s5
+#	return value in $t0
+sum4__prologue:
 	push	$ra
 	push	$s0
 	push	$s1
@@ -57,7 +57,9 @@ sum4__proglogue:
 	move	$s3, $a3
 
 sum4__body:
-	jal	sum2		# res1 = sum2(a, b)
+	move	$a0, $s0	# res1 = sum2(a, b)
+	move	$a1, $s1
+	jal	sum2
 	move	$s4, $v0
 
 	move	$a0, $s2	# res2 = sum2(c, d)
@@ -65,9 +67,10 @@ sum4__body:
 	jal	sum2
 	move	$s5, $v0
 
-	move	$a0, $s4	# return sum2(res1, res2)
+	move	$a0, $s4	# result = sum2(res1, res2)
 	move	$a1, $s5
 	jal	sum2
+	move	$t0, $v0
 
 sum4__epilogue:
 	pop	$s5
@@ -77,18 +80,28 @@ sum4__epilogue:
 	pop	$s1
 	pop	$s0
 	pop	$ra
-	end
 
+	move	$v0, $t0
 	jr	$ra
 
-
-# sum2 returns the sum of 2 arguments
 sum2:
-	# args:
-	# $a0 - x
-	# $a1 - y
-	move	$t0, $a0	# you might choose to move arguments out of a registers
-	move	$t1, $a1
+# function that adds two numbers
+# args:
+#	$a0 : x
+#	$a1 : y
+# return value:
+#	$v0 : sum of x and y
+# local variables:
+#	x in $t0
+#	y in $t1
+#	x + y in $t2
+sum2__prologue:
+	move	$t0, $a0	# move arguments out of
+	move	$t1, $a1	# a registers
 
-	add	$v0, $t0, $t1	# return x + y
+sum2__body:
+	add	$t2, $t0, $t1	# result = x + y
+
+sum2__epilogue:
+	move	$v0, $t2	# return result
 	jr	$ra

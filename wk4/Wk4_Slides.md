@@ -3,10 +3,8 @@ marp: true
 class: invert
 ---
 
-# 2D Arrays, Functions, and Structs
+# Functions, 2D Arrays, and Structs
 Week 4 Tute
-
-We'll start at 10 past :D
 
 ---
 
@@ -95,7 +93,7 @@ How would you calculate the addresses of:
 
 # General equation for 2D arrays:
 
-size_of_element * ((row * num_col) + col)
+size_of_element * ((row * num_cols) + col)
 
 ---
 
